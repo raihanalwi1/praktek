@@ -1,0 +1,29 @@
+*{margin:0;padding:0;font-family:arial}
+
+nav{width: 100%; background: #468; position: fixed; z-index: 999;}
+.kiri{float:left; width: 500px;}.kiri a{font-weight:bold}
+.kanan{float:right}
+nav .kanan li{list-style:none;display:inline}
+nav ul li a{font-size:17px;}
+nav .kanan li a{display:inline-block;padding:18px;color:#fff;}
+nav .kiri li a{display:inline-block;padding:18px;color:#fff;text-transform:uppercase}
+a{text-decoration:none}
+.sidebar{width:20%;background:#444;position:fixed;height:100%;padding-top:70px;overflow:hidden;float:left}
+.sidebar ul li{list-style:none;}
+.sidebar ul li a{padding:20px;width:100%;color:#ccc;display:block;transition:0.4s}
+.sidebar ul li a:hover{background:#fff;color:#444}
+.main{float:right;width:80%;}
+.span{background:#3498db;color:#fff;padding:10px;display:inherit;margin-bottom:10px;}
+.isimain{padding:70px 30px 30px 30px;}
+input[type=text],select,textarea{width:400px;margin:10px 0 10px 0;padding:10px;resize:none}
+input[type=date],select,textarea{width:400px;margin:10px 0 10px 0;padding:10px;resize:none}
+input[type=password],select,textarea{width:400px;margin:10px 0 10px 0;padding:10px;resize:none}
+
+
+textarea{height:200px;}
+input[type=submit]{margin:10px 0 10px 0;outline:0;background:#2ecc71;color:#fff;border:0;padding:10px;cursor:pointer}
+
+
+footer {
+display: block;
+}
