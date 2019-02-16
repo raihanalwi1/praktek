@@ -7,7 +7,7 @@
 	$user="";
 	$tgl="";
 
-	$query = "SELECT max(no_meja) as maxKode FROM pesan";
+	$query = "SELECT max(id_order) as maxKode FROM pesan";
 	$hasil = mysqli_query($conn,$query);
 	$data  = mysqli_fetch_array($hasil);
 	$kd = $data['maxKode'];
@@ -17,9 +17,10 @@
 	$newID = $char . sprintf("%03s", $noUrut);
 	
 	if (isset($_POST['tambah'])) {
-		# code...
+
 		$nama_user = $_POST['nama_user'];
 		$tanggal = $_POST['tanggal'];
+		$tgl = date('Y-m-d');
 		$ord = $_POST['id_order'];
 		$msk	= $_POST['nama_masakan'];
 		$id_user = $_POST['nama_user'];
@@ -28,49 +29,47 @@
 		$sql = mysqli_query($conn, "INSERT INTO temp_transaksi (id_user,id_masakan,id_order,jml) values ('$id_user','$msk','$ord','$jml')");
 		if ($sql) {
 			# code...
-			header('location:?modul=order&aksi=add&user='.$nama_user.'&tgl='.$tanggal);
+			header('location:?modul=order&aksi=add&user='.$nama_user.'&tgl='.$tgl);
 		}else{
 			mysql_error();
 		}
 	}
 
 	if (isset($_GET['user'])) {
-		# code...
 		$user = $_GET['user'];
 		$tgl = $_GET['tgl'];
 
 	}
 
 	if (isset($_GET['del'])) {
-		# code...
 		$id = $_GET['del'];
 		$delete = "DELETE FROM temp_transaksi WHERE id_temp='$id'";
-		$query = mysqli_query($conn,$delete);
+		$query = mysqli_query($conn, $delete);
 
 		if ($query) {
-			# code...
 			header('location:?modul=order&aksi=add&user='.$_GET['user'].'&tgl='.$_GET['tgl']);
 		}else{
 			mysqli_error();
 		}
 	}
+
 	if(isset($_POST['simpan'])){
 		$tgl = date('Y-m-d');
-    $total= $_POST['total_harga'];
+    $nm   = $_POST['no_meja'];
+		$ket  = $_POST['keterangan'];
+		$jml = $_POST['jml'];
+
     $temp_order = mysqli_query($conn, "SELECT * FROM temp_transaksi ");
-   
-    while($res = mysqli_fetch_array($temp_order)){
+   	while($res = mysqli_fetch_array($temp_order)){
       $io   = $res['id_order'];
-      $nm   = $res['no_meja'];
-      $iu   = $res['id_user'];
-      $ket  = $res['keterangan'];
+      $iu   = $res['id_user']; 
       $idm  = $res['id_masakan'];
-      $qty  = $res['qty'];
-      
-      mysqli_query($conn, "INSERT INTO detail_order (id_order, id_masakan, qty, keterangan) VALUES ('$io', '$idm',' $qty', '$ket')");
+
+      mysqli_query($conn, "INSERT INTO detail_order (id_order, id_masakan, keterangan, jumlah) VALUES ('$io', '$idm', '$ket', '$jml')");
     }
     
-			mysqli_query($conn, "INSERT INTO pesan(id_order, no_meja,tanggal,id_user,keterangan, total_harga, status_order, status_transaksi) values ('$io', '$nm', '$tgl', '$iu', '$ket', '$total', '1', '1')");
+			mysqli_query($conn, "INSERT INTO pesan(id_order, no_meja, tanggal, id_user, keterangan, status_order) values ('$io', '$nm', '$tgl', '$iu', '$ket', '1')");
+
 			mysqli_query($conn, "TRUNCATE temp_transaksi");
 
 			header('location:?modul=order');
@@ -85,10 +84,15 @@
 			<tr>
 				<td colspan="3"><hr></td>
 			</tr>
-	<tr>
+			<tr>
 				<td style="width: 200px"> Id Order</td>
 				<td style="width: 1px"> :</td>
 				<td><input type="text" name="id_order" id="id_order" value="<?=$newID?>" readonly="readonly"></td>
+			</tr>
+			<tr>
+				<td style="width: 200px">No Meja</td>
+				<td style="width: 1px"> :</td>
+				<td><input type="text" name="no_meja" id="no_meja"></td>
 			</tr>
 			<tr>
 				<td style="width: 200px">Nama User</td>
@@ -138,6 +142,13 @@
 				</td>
 			</tr>
 			<tr>
+				<td style="width: 200px">Keterangan</td>
+				<td style="width: 1px"> :</td>
+				<td>
+					<textarea name="keterangan" id="keterangan" cols="5"></textarea>
+				</td>
+			</tr>
+			<tr>
 				<td style="width: 200px">&nbsp;</td>
 				<td style="width: 1px">&nbsp;</td>
 				<td>
@@ -173,7 +184,6 @@
 								$no=1;
 								$sql = mysqli_query($conn, "SELECT temp_transaksi.*, masakan.nama_masakan FROM temp_transaksi INNER JOIN masakan ON temp_transaksi.id_masakan=masakan.id_masakan ORDER BY id_temp ASC");
 								while ($rs=mysqli_fetch_array($sql)) {
-									# code...
 									echo '
 										<tr>
 											<td style="border:1px solid #000;padding:3px;font-size:12px;text-align:center;">'.$no.'</td>
@@ -183,7 +193,7 @@
 											<td style="border:1px solid #000;padding:3px;font-size:12px;text-align:center;">'.$rs['jml'].'</td>
 
 											<td style="border:1px solid #000;padding:3px;font-size:12px;text-align:center;">
-											<a href="?modul=pesan&aksi=del&user='.$user.'&tgl='.$tgl.'&del='.$rs['id_temp'].'" style="padding:5px;">Hapus</a>
+											<a href="?modul=order&aksi=add&user='.$user.'&tgl='.$tgl.'&del='.$rs['id_temp'].'" style="padding:5px;">Hapus</a>
 											</td>
 
 										</tr>';
